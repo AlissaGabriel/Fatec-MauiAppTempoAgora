@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using MauiAppTempoAgora.Models;
+using System.Diagnostics;
 
 namespace MauiAppTempoAgora.Services
 {
@@ -10,9 +11,11 @@ namespace MauiAppTempoAgora.Services
             Tempo? t = null;
 
             string chave = "53fb370ac763ee7ac16d575813fd7064";
-            string url = $"https://api.openweathermap.org/data/2.5/weather?q={cidade}&units=metric&appid={chave}";
+            
+            string url = $"https://api.openweathermap.org/data/2.5/weather?" +
+                         $"q={cidade}&units=metric&appid={chave}";
 
-            using(HttpClient client = new HttpClient())
+            using (HttpClient client = new HttpClient())
             {
                 HttpResponseMessage resp = await client.GetAsync(url);
 
@@ -22,28 +25,27 @@ namespace MauiAppTempoAgora.Services
 
                     var rascunho = JObject.Parse(json);
 
-                    DateTime time = new();
-                    DateTime sunrise = time.AddSeconds((double)rascunho["sys"]["sunrise"]);
-                    DateTime sunset = time.AddSeconds((double)rascunho["sys"]["sunset"]);
+                    DateTimeOffset nascer = DateTimeOffset.FromUnixTimeSeconds((long)rascunho["sys"]["sunrise"]);
+                    DateTimeOffset por = DateTimeOffset.FromUnixTimeSeconds((long)rascunho["sys"]["sunset"]);
 
                     t = new()
                     {
-                        lat = (double)rascunho["coord"]["lat"], 
+                        lat = (double)rascunho["coord"]["lat"],
                         lon = (double)rascunho["coord"]["lon"],
                         description = (string)rascunho["weather"][0]["main"],
                         temp_max = (double)rascunho["main"]["temp_max"],
                         temp_min = (double)rascunho["main"]["temp_min"],
-
                         temp = (double)rascunho["main"]["temp"],
                         feels_like = (double)rascunho["main"]["feels_like"],
                         visibility = (int)rascunho["visibility"],
-                        sunrise = sunrise,
-                        sunset = sunset,
+                        sunrise = nascer.LocalDateTime,
+                        sunset = por.LocalDateTime,
                         timezone = (int)rascunho["timezone"],
                         icon = (string)rascunho["weather"][0]["icon"]
                     };
                 }
             }
+
             return t;
         }
     }

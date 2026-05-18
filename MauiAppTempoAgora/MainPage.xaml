@@ -3,16 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiAppTempoAgora.MainPage">
 
-    <StackLayout>
+    <Grid RowDefinitions="Auto, Auto, Auto, 100, *">
+        <Button Grid.Row="0" Text="Obter Minha Localização" Clicked="Button_Clicked_Localizacao" />
 
-        <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10" Margin="10">
-            <Entry Grid.Column="0" x:Name="txt_cidade" Placeholder="Qual cidade?"/>
-            <Button Grid.Column="1" Text="Pesquisar" Clicked="Button_Clicked"/>
+        <Grid Grid.Row="1" ColumnDefinitions="*, Auto" ColumnSpacing="10" Margin="10">
+            <Entry Grid.Column="0" x:Name="txt_cidade" Placeholder="Qual cidade?" />
+            <Button Grid.Column="1" Text="Pesquisar" Clicked="Button_Clicked_Previsao" />
         </Grid>
-        
-        <Label x:Name="lbl_previsao"/>
 
-        <WebView x:Name="wv_mapa" HeightRequest="500"/>
-    </StackLayout>
-
+        <Label Grid.Row="2" x:Name="lbl_previsao" />
+        <Image Grid.Row="3" x:Name="img_icone" />     
+        <WebView Grid.Row="4" x:Name="wv_mapa" Source="google.com" />
+    </Grid>
 </ContentPage>
